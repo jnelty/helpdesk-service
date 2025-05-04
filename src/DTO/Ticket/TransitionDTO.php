@@ -1,0 +1,21 @@
+<?php
+
+namespace App\DTO;
+use Symfony\Component\Validator\Constraints as Assert;
+
+class TransitionDTO implements DtoResolvedInterface
+{
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Choice([
+            'choices' => [
+                'to_open',
+                'to_resolved',
+                'to_closed'
+            ]
+        ])]
+        public ?string $transition,
+    )
+    {
+    }
+}
