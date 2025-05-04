@@ -35,6 +35,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: php84-fpm-service
+    depends_on:
+      - postgres-service
+      - redis
     volumes:
       - .:/var/www/project
     networks:
