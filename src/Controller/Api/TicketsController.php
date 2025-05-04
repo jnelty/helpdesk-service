@@ -121,23 +121,21 @@ final class TicketsController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $ticket = $this->ticketService->addTicketMessage(
+        $ticketMessage = $this->ticketService->addTicketMessage(
             createTicketMessageDTO: $createTicketMessageDTO,
             ticket: $ticket,
             user: $user
         );
 
-        $ticketData = $this->serializer->normalize(
-            data: $ticket,
+        $messageData = $this->serializer->normalize(
+            data: $ticketMessage,
             context: [
                 '_format' => 'json',
-                'groups' => ['store-view', 'tag-view']
+                'groups' => ['message-view']
             ]
         );
 
-        return new JsonResponse([
-           'ticket' => $ticketData
-        ]);
+        return new JsonResponse($messageData);
     }
 
     /**

@@ -169,7 +169,7 @@ class Ticket
     {
         if (!$this->ticketMessages->contains($ticketMessage)) {
             $this->ticketMessages->add($ticketMessage);
-            $ticketMessage->setTicketId($this);
+            $ticketMessage->setTicket($this);
         }
 
         return $this;
@@ -179,8 +179,8 @@ class Ticket
     {
         if ($this->ticketMessages->removeElement($ticketMessage)) {
             // set the owning side to null (unless already changed)
-            if ($ticketMessage->getTicketId() === $this) {
-                $ticketMessage->setTicketId(null);
+            if ($ticketMessage->getTicket() === $this) {
+                $ticketMessage->setTicket(null);
             }
         }
 

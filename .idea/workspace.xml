@@ -5,50 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da09c732-a2e1-473e-82a1-63917bc95777" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/nginx/default.conf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ArgumentResolver/DtoValueResolver.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Controller/Api/UserController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/DtoResolvedInterface.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/Ticket/CreateTicketDTO.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/Ticket/CreateTicketMessageDTO.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/Ticket/TransitionDTO.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/User/CreateUserDTO.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DTO/User/LoginUserDTO.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Enum/TicketStatusEnum.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/EventSubscriber/TicketStatusTransitionSubscriber.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Events/TicketStatusNotFoundEvent.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exceptions/ApiException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exceptions/ApiExceptionData.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exceptions/UndefinedEntityFieldException.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Exceptions/ValidationFailedApiExceptionData.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/TagService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/TicketMessageService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/TicketMessageTypeService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/TicketService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Service/UserService.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Validator/EmailExists.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Validator/EmailExistsValidator.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Validator/EmailNotExists.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Validator/EmailNotExistsValidator.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.env.dev" beforeDir="false" afterPath="$PROJECT_DIR$/.env.dev" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.php-version" beforeDir="false" afterPath="$PROJECT_DIR$/.php-version" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/cache.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/framework.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/packages/routing.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/packages/routing.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/preload.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/preload.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes/framework.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes/framework.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/services.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/services.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TicketsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TicketsController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/TicketMessage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TicketMessage.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Service/TicketService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/TicketService.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,25 +130,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;php.override.implement.member.chooser.php.doc&quot;: &quot;NONE&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;web-ide.project.structure&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "php.override.implement.member.chooser.php.doc": "NONE",
+    "settings.editor.selected.configurable": "web-ide.project.structure",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/Controller/Api" />
@@ -221,7 +182,7 @@
       <workItem from="1746264584257" duration="18277000" />
       <workItem from="1746287078382" duration="1299000" />
       <workItem from="1746290195640" duration="3647000" />
-      <workItem from="1746353179260" duration="5750000" />
+      <workItem from="1746353179260" duration="6664000" />
     </task>
     <servers />
   </component>

@@ -77,7 +77,7 @@ class TicketService
         CreateTicketMessageDTO $createTicketMessageDTO,
         Ticket $ticket,
         User $user
-    ): Ticket
+    ): TicketMessage
     {
         $ticketMessage = $this->ticketMessageService->store($createTicketMessageDTO, $user);
         $ticket->addTicketMessage($ticketMessage);
@@ -85,6 +85,6 @@ class TicketService
 
         $this->entityManager->flush();
 
-        return $ticket;
+        return $ticketMessage;
     }
 }
