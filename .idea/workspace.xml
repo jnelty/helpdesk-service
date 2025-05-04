@@ -6,10 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="da09c732-a2e1-473e-82a1-63917bc95777" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/Api/TicketsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/Api/TicketsController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/TicketMessage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/TicketMessage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/TicketService.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/TicketService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20250503134232.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20250503134232.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20250504104657.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20250504104657.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/Version20250504115540.php" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/Version20250504115540.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +182,7 @@
       <workItem from="1746264584257" duration="18277000" />
       <workItem from="1746287078382" duration="1299000" />
       <workItem from="1746290195640" duration="3647000" />
-      <workItem from="1746353179260" duration="6664000" />
+      <workItem from="1746353179260" duration="7215000" />
     </task>
     <servers />
   </component>
