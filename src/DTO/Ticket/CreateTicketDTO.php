@@ -1,8 +1,11 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Ticket;
 
+use App\DTO\DtoResolvedInterface;
+use App\Validator\EmailExists;
 use Symfony\Component\Validator\Constraints as Assert;
+
 readonly class CreateTicketDTO implements DtoResolvedInterface
 {
     public function __construct(
@@ -29,6 +32,7 @@ readonly class CreateTicketDTO implements DtoResolvedInterface
         #[Assert\Email(
             message: 'The email {{ value }} is not a valid email.',
         )]
+        #[EmailExists]
         public ?string $requesterEmail
     ) {
     }

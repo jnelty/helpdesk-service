@@ -1,0 +1,65 @@
+
+services:
+###> doctrine/doctrine-bundle ###
+  postgres-service:
+    container_name: helpdesk-postgres
+    image: postgres:${POSTGRES_VERSION:-17}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-helpdesk_service}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-helpdesk_admin}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-helpdesk_service}", "-U", "${POSTGRES_USER:-helpdesk_admin}"]
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+    networks:
+      - nginx-phpnetwork
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+  redis:
+    image: redis:7-alpine
+    container_name: helpdesk-redis
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"] # persist data
+    networks:
+      - nginx-phpnetwork
+
+  php84-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php84-fpm-service
+    volumes:
+      - .:/var/www/project
+    networks:
+      - nginx-phpnetwork
+
+
+  nginx-service:
+    image: nginx:stable-alpine
+    container_name: helpdesk-nginx-service
+    ports:
+      - "8888:80"
+    volumes:
+      - .:/var/www/project
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php84-service
+      - postgres-service
+      - redis
+    networks:
+      - nginx-phpnetwork
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+  redis_data:
+###< doctrine/doctrine-bundle ###
+networks:
+  nginx-phpnetwork:

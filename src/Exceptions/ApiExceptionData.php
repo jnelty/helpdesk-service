@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class ApiException
+class ApiExceptionData
 {
 
     public function __construct(protected int $statusCode, protected string $type)

@@ -1,0 +1,26 @@
+framework:
+    workflows:
+        ticket_status:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'currentPlace'
+            supports:
+                - App\Entity\Ticket
+            initial_marking: new
+            places:
+                - open
+                - resolved
+                - closed
+                - new
+            transitions:
+                to_open:
+                    from: new
+                    to: open
+                to_resolved:
+                    from: open
+                    to: resolved
+                to_closed:
+                    from: [new, open, resolved]

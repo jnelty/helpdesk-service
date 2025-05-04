@@ -1,0 +1,7 @@
+
+services:
+###> doctrine/doctrine-bundle ###
+  postgres-service:
+    ports:
+      - "32770:5432"
+###< doctrine/doctrine-bundle ###

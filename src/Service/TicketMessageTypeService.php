@@ -5,20 +5,26 @@ namespace App\Service;
 use App\Entity\TicketMessageType;
 use Doctrine\ORM\EntityManagerInterface;
 
-class TicketMessageService
-{    public function __construct(
-    private EntityManagerInterface $entityManager,
+class TicketMessageTypeService
+{
+    public function __construct(
+        private EntityManagerInterface $entityManager
+    ) {
+
+    }
     public function getOrCreate(string $type): TicketMessageType
     {
         $ticketMessageType = $this->entityManager
             ->getRepository(TicketMessageType::class)
-            ->findOneBy(['name' => $createTicketMessageDTO->type]);
+            ->findOneBy(['name' => $type]);
 
         if (! $ticketMessageType) {
             $ticketMessageType = new TicketMessageType();
-            $ticketMessageType->setName($createTicketMessageDTO->type);
+            $ticketMessageType->setName($type);
 
             $this->entityManager->persist($ticketMessageType);
         }
+
+        return $ticketMessageType;
     }
 }

@@ -5,4 +5,5 @@ namespace App\DTO;
 interface DtoResolvedInterface
 {
 
+
 }

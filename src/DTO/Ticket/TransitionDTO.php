@@ -1,6 +1,7 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Ticket;
+use App\DTO\DtoResolvedInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class TransitionDTO implements DtoResolvedInterface

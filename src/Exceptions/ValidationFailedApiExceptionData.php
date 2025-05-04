@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class ValidationFailedApiException extends ApiException
+class ValidationFailedApiExceptionData extends ApiExceptionData
 {
     private ConstraintViolationList $violations;
 

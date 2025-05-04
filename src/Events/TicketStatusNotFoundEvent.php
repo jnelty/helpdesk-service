@@ -2,16 +2,11 @@
 
 namespace App\Events;
 
-class TicketStatusIsNotFoundEvent
+class TicketStatusNotFoundEvent
 {
     public const NAME = 'ticket_status.not_found';
 
     public function __construct()
     {
-    }
-
-    public function getDto(): PromotionEnquiryInterface
-    {
-        return $this->dto;
     }
 }
