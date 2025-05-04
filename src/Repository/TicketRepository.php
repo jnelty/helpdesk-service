@@ -29,14 +29,14 @@ class TicketRepository extends ServiceEntityRepository
         if ($status) {
             $queryBuilder
                 ->innerJoin('t.status', 's')
-                ->where('s.name = :status')
+                ->andWhere('s.name = :status')
                 ->setParameter('status', $status);
         }
 
         if ($tags) {
             $queryBuilder
                 ->join('t.tags', 'tags')
-                ->where('tags.name IN (:tags)')
+                ->andWhere('tags.name IN (:tags)')
                 ->setParameter('tags', $tags);
         }
 
