@@ -42,8 +42,7 @@ readonly class DtoValueResolver implements ValueResolverInterface
         if ($violations->count() > 0) {
             $exceptionData = new ValidationFailedApiExceptionData(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
-                'ContraintViolationList',
-                $violations
+                violations: $violations
             );
 
             throw new ApiException($exceptionData);

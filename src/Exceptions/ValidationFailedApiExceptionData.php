@@ -10,8 +10,8 @@ class ValidationFailedApiExceptionData extends ApiExceptionData
 
     public function __construct(
         int $statusCode,
-        string $type,
-        ConstraintViolationList $violations
+        ConstraintViolationList $violations,
+        string $type = 'ConstraintViolationList',
     )
     {
         parent::__construct($statusCode, $type);

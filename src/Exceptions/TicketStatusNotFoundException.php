@@ -7,8 +7,8 @@ class TicketStatusNotFoundException extends ApiExceptionData
     private string $message;
     public function __construct(
         int $statusCode,
-        string $type = "TicketStatusNotFound",
         string $message = "Ticket status not found",
+        string $type = "TicketStatusNotFound"
     )
     {
         parent::__construct($statusCode, $type);
