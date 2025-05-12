@@ -6,31 +6,40 @@ use App\DTO\Ticket\CreateTicketDTO;
 use App\DTO\Ticket\CreateTicketMessageDTO;
 use App\Entity\Ticket;
 use App\Entity\TicketMessage;
-use App\Entity\TicketMessageType;
 use App\Entity\TicketStatus;
 use App\Entity\User;
 use App\Enum\TicketStatusEnum;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class TicketService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TagService $tagService,
-        private TicketMessageService $ticketMessageService
+        private TicketMessageService $ticketMessageService,
+        private TagAwareCacheInterface $cache,
+        private SerializerInterface $serializer,
     )
     {
     }
 
     public function store(
-        CreateTicketDTO $createTicketDTO
+        CreateTicketDTO $createTicketDTO,
+        User $user
     ): Ticket
     {
         $ticket = new Ticket();
+        $ticket->setUser($user);
+
         $newTicketStatus = $this->entityManager
             ->getRepository(TicketStatus::class)
-            ->findByNameFieldOrNull(TicketStatusEnum::NEW->value);
+            ->findOneBy([
+                "name" => TicketStatusEnum::NEW->value
+            ]);
 
         if (! $newTicketStatus) {
             $newTicketStatus = new TicketStatus();
@@ -38,12 +47,6 @@ class TicketService
 
             $this->entityManager->persist($newTicketStatus);
         }
-
-        /** @var User $user */
-        $user = $this->entityManager
-            ->getRepository(User::class)
-            ->findOneBy(['email' => $createTicketDTO->requesterEmail]);
-        $ticket->setUser($user);
 
         $tags = $this->tagService->getOrCreateManyTags($createTicketDTO->tags);
         foreach ($tags as $tag) {
@@ -56,11 +59,13 @@ class TicketService
 
         $this->entityManager->persist($ticket);
         $this->entityManager->flush();
+        $this->cache->invalidateTags(['tickets']);
+
 
         return $ticket;
     }
 
-    public function updateTicketStatus(
+    public function updateStatus(
         Ticket $ticket,
         TicketStatus  $ticketStatus
     ): Ticket
@@ -69,22 +74,90 @@ class TicketService
 
         $this->entityManager->persist($ticket);
         $this->entityManager->flush();
+        $this->cache->invalidateTags(['tickets']);
 
         return $ticket;
     }
 
-    public function addTicketMessage(
+    public function createMessage(
         CreateTicketMessageDTO $createTicketMessageDTO,
         Ticket $ticket,
         User $user
     ): TicketMessage
     {
         $ticketMessage = $this->ticketMessageService->store($createTicketMessageDTO, $user);
-        $ticket->addTicketMessage($ticketMessage);
+        $ticket->addMessage($ticketMessage);
         $this->entityManager->persist($ticket);
 
         $this->entityManager->flush();
+        $this->cache->invalidateTags(['tickets']);
 
         return $ticketMessage;
+    }
+
+
+    public function fetchById(int $ticketId): array
+    {
+        $cacheKey = 'tickets_'.$ticketId;
+
+        $ticketData = $this->cache
+            ->get($cacheKey, function (ItemInterface $item) use ($ticketId): array|null {
+                $item->tag(['tickets']);
+                $item->expiresAfter(3600);
+
+                $ticket = $this->entityManager->getRepository(Ticket::class)->find($ticketId);
+
+                $ticketData = $this->serializer->normalize(
+                    data: $ticket,
+                    context: [
+                        '_format' => 'json',
+                        'groups' => ['store-view', 'tag-view']
+                    ]
+                );
+
+                return $ticketData;
+            });
+
+        if (! $ticketData) {
+            throw new NotFoundHttpException('The requested ticket does not exist.');
+        }
+
+        return $ticketData;
+    }
+
+    public function fetchAll(array $query): array
+    {
+        extract($query);
+
+        $cacheKey = 'tickets_' . md5(json_encode($query));
+        $ticketsData = $this->cache
+            ->get($cacheKey, function (ItemInterface $item) use ($status, $tags, $page, $limit): array|null {
+                $item->tag(['tickets']);
+                $item->expiresAfter(3600);
+
+                $tickets = $this->entityManager->getRepository(Ticket::class)->findByParams(
+                    params: [
+                        'status' => $status,
+                        'tags' => $tags,
+                    ],
+                    pageOptions: [
+                        'page' => $page,
+                        'limit' => $limit
+                    ]
+                );
+
+                $ticketsData = $this->serializer->normalize(
+                    data: $tickets,
+                    context: [
+                        '_format' => 'json',
+                        'groups' => ['index-view', 'tag-view']
+                    ]
+                );
+
+                return $ticketsData;
+        });
+
+
+        return $ticketsData;
     }
 }

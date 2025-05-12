@@ -9,6 +9,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -32,18 +33,13 @@ final class ExceptionListener
             ], $ex->getStatusCode());
 
             $event->setResponse($errorResponse);
+        } elseif ($ex instanceof NotFoundHttpException) {
+            $errorResponse = new JsonResponse([
+               'type' => 'NotFoundMessage',
+               'message' => $ex->getMessage()
+            ]);
+
+            $event->setResponse($errorResponse);
         }
-    }
-
-    #[AsEventListener(event: TicketStatusNotFoundEvent::class)]
-    public function onTicketStatusNotFoundEvent(TicketStatusNotFoundEvent $event): void
-    {
-        $exceptionData = new UndefinedEntityFieldException(
-            Response::HTTP_UNPROCESSABLE_ENTITY,
-            'BadTicketField',
-            'The status field of ticket is not defined'
-        );
-
-        throw new ApiException($exceptionData);
     }
 }

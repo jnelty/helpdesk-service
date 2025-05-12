@@ -4,24 +4,20 @@ namespace App\EventSubscriber;
 
 use App\Entity\Ticket;
 use App\Entity\TicketStatus;
-use App\Events\TicketStatusNotFoundEvent;
 use App\Exceptions\ApiException;
-use App\Exceptions\UndefinedEntityFieldException;
+use App\Exceptions\TicketStatusNotFoundException;
 use App\Repository\TicketStatusRepository;
 use App\Service\TicketService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Workflow\Event\CompletedEvent;
 use Symfony\Component\Workflow\Event\GuardEvent;
-use Symfony\Component\Workflow\Event\TransitionEvent;
 
 readonly class TicketStatusTransitionSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private EntityManagerInterface   $entityManager,
-        private EventDispatcherInterface $eventDispatcher,
         private TicketService $ticketService
     )
     {
@@ -34,7 +30,13 @@ readonly class TicketStatusTransitionSubscriber implements EventSubscriberInterf
         $ticketStatus = $ticket->getStatus();
 
         if (! $ticketStatus) {
-            $this->eventDispatcher->dispatch(new TicketStatusNotFoundEvent());
+            $exceptionData = new TicketStatusNotFoundException(
+                Response::HTTP_BAD_REQUEST,
+                "TicketStatusNotFound",
+                "Ticket status not found",
+            );
+
+            throw new ApiException($exceptionData);
         }
     }
 
@@ -48,13 +50,21 @@ readonly class TicketStatusTransitionSubscriber implements EventSubscriberInterf
             ->getRepository(TicketStatus::class);
 
         $ticketStatus = $ticketStatusRepository
-            ->findByNameFieldOrNull($ticket->getCurrentPlace());
+            ->findOneBy([
+                "name" => $ticket->getCurrentPlace()
+            ]);
 
         if (! $ticketStatus) {
-            $this->eventDispatcher->dispatch(new TicketStatusNotFoundEvent());
+            $exceptionData = new TicketStatusNotFoundException(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                "TicketStatusNotFound",
+                "Ticket status not found. Can not make transition",
+            );
+
+            throw new ApiException($exceptionData);
         }
 
-        $this->ticketService->updateTicketStatus($ticket, $ticketStatus);
+        $this->ticketService->updateStatus($ticket, $ticketStatus);
     }
     public static function getSubscribedEvents(): array
     {

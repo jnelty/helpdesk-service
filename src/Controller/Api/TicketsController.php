@@ -8,9 +8,9 @@ use App\DTO\Ticket\TransitionDTO;
 use App\Entity\Ticket;
 use App\Entity\User;
 use App\Service\TicketService;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\ValueResolver;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Workflow\WorkflowInterface;
 
@@ -26,8 +27,6 @@ final class TicketsController extends AbstractController
     public function __construct(
         #[Target('ticket_status')]
         private WorkflowInterface $workflow,
-
-        private EntityManagerInterface $entityManager,
         private TicketService $ticketService,
         private SerializerInterface $serializer,
     )
@@ -35,12 +34,16 @@ final class TicketsController extends AbstractController
     }
 
 
+
     #[Route('/api/tickets', name: 'storeTickets', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the storing ticket.', statusCode: 423)]
     public function store(
         #[ValueResolver('dto')] CreateTicketDTO $createTicketDTO
     ): JsonResponse
     {
-        $ticket = $this->ticketService->store($createTicketDTO);
+        /** @var User $user */
+        $user = $this->getUser();
+        $ticket = $this->ticketService->store($createTicketDTO, $user);
 
         $ticketData = $this->serializer->normalize(
             data: $ticket,
@@ -59,8 +62,12 @@ final class TicketsController extends AbstractController
         methods: ['GET'],
     )]
     public function index(
-        #[MapQueryParameter(validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY)] ?string $status,
-        #[MapQueryParameter(validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY)] ?array $tags,
+        #[MapQueryParameter(
+            validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
+        )] ?string $status,
+        #[MapQueryParameter(
+            validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
+        )] ?array $tags,
         #[MapQueryParameter(
             options: ['min_range' => 1],
             validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
@@ -71,28 +78,17 @@ final class TicketsController extends AbstractController
         )] int $limit = 20
     ): JsonResponse
     {
-        $tickets = $this->entityManager->getRepository(Ticket::class)->findByParams(
-            params: [
-                'status' => $status,
-                'tags' => $tags,
-            ],
-            pageOptions: [
-                'page' => $page,
-                'limit' => $limit
-            ]
-        );
 
-        $ticketData = $this->serializer->normalize(
-            data: $tickets,
-            context: [
-                '_format' => 'json',
-                'groups' => ['index-view', 'tag-view']
-            ]
-        );
+        $ticketsData = $this->ticketService->fetchAll([
+            'status' => $status,
+            'tags' => $tags,
+            'page' => $page,
+            'limit' => $limit
+        ]);
 
         return new JsonResponse([
-            'items' => $ticketData,
-            'total' => count($ticketData),
+            'items' => $ticketsData,
+            'total' => count($ticketsData),
             'page' => $page,
             'limit' => $limit
         ], Response::HTTP_OK);
@@ -100,15 +96,11 @@ final class TicketsController extends AbstractController
     }
 
     #[Route('/api/tickets/{id}', name: 'showTicket', methods: ['GET'])]
-    public function show(Ticket $ticket): JsonResponse
+    public function show(
+        int $id
+    ): JsonResponse
     {
-        $ticketData = $this->serializer->normalize(
-            data: $ticket,
-            context: [
-                '_format' => 'json',
-                'groups' => ['store-view', 'tag-view']
-            ]
-        );
+        $ticketData = $this->ticketService->fetchById($id);
 
         return new JsonResponse($ticketData, Response::HTTP_OK);
     }
@@ -116,12 +108,13 @@ final class TicketsController extends AbstractController
     #[Route('/api/tickets/{id}/messages', name: 'createTicketMessage', methods: ['POST'])]
     public function createMessage(
         #[ValueResolver('dto')] CreateTicketMessageDTO $createTicketMessageDTO,
+        #[MapEntity(message: 'The ticket does not exist')]
         Ticket $ticket
     ): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
-        $ticketMessage = $this->ticketService->addTicketMessage(
+        $ticketMessage = $this->ticketService->createMessage(
             createTicketMessageDTO: $createTicketMessageDTO,
             ticket: $ticket,
             user: $user
@@ -145,6 +138,7 @@ final class TicketsController extends AbstractController
     #[Route('/api/tickets/{id}/transition', name: 'transitStatusTicket', methods: ['POST'])]
     public function transit(
         #[ValueResolver('dto')] TransitionDTO $transitionDTO,
+        #[MapEntity(message: 'The ticket does not exist')]
         Ticket $ticket
     ): JsonResponse
     {

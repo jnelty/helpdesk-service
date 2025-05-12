@@ -165,7 +165,7 @@ class Ticket
         return $this->ticketMessages;
     }
 
-    public function addTicketMessage(TicketMessage $ticketMessage): static
+    public function addMessage(TicketMessage $ticketMessage): static
     {
         if (!$this->ticketMessages->contains($ticketMessage)) {
             $this->ticketMessages->add($ticketMessage);

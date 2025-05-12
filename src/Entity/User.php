@@ -40,10 +40,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: TicketMessage::class, mappedBy: 'user_id')]
     private Collection $ticketMessages;
 
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->ticketMessages = new ArrayCollection();
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
     }
 
     #[Groups(["profile-view"])]
@@ -120,7 +136,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->ticketMessages->contains($ticketMessage)) {
             $this->ticketMessages->add($ticketMessage);
-            $ticketMessage->setUserId($this);
+            $ticketMessage->setUser($this);
         }
 
         return $this;
@@ -130,18 +146,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->ticketMessages->removeElement($ticketMessage)) {
             // set the owning side to null (unless already changed)
-            if ($ticketMessage->getUserId() === $this) {
-                $ticketMessage->setUserId(null);
+            if ($ticketMessage->getUser() === $this) {
+                $ticketMessage->setUser(null);
             }
         }
 
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return [];
-    }
 
     public function eraseCredentials(): void
     {

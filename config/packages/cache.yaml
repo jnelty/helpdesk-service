@@ -1,5 +1,11 @@
 framework:
     cache:
+        pools:
+            cache:
+                adapter: cache.adapter.redis_tag_aware
+                tags: true
+                provider: redis://redis
+
         # Unique name of your app: used to compute stable namespaces for cache keys.
         #prefix_seed: your_vendor_name/app_name
 

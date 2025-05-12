@@ -25,15 +25,15 @@ readonly class CreateTicketDTO implements DtoResolvedInterface
         public ?string $description,
 
         #[Assert\Type('array')]
-        public ?array $tags,
+        public ?array $tags
 
-        #[Assert\NotBlank]
-        #[Assert\Type('string')]
-        #[Assert\Email(
-            message: 'The email {{ value }} is not a valid email.',
-        )]
-        #[EmailExists]
-        public ?string $requesterEmail
+//        #[Assert\NotBlank]
+//        #[Assert\Type('string')]
+//        #[Assert\Email(
+//            message: 'The email {{ value }} is not a valid email.',
+//        )]
+//        #[EmailExists]
+//        public ?string $requesterEmail
     ) {
     }
 }
