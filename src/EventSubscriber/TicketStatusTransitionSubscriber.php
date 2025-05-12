@@ -32,8 +32,6 @@ readonly class TicketStatusTransitionSubscriber implements EventSubscriberInterf
         if (! $ticketStatus) {
             $exceptionData = new TicketStatusNotFoundException(
                 Response::HTTP_BAD_REQUEST,
-                "TicketStatusNotFound",
-                "Ticket status not found",
             );
 
             throw new ApiException($exceptionData);
@@ -57,8 +55,7 @@ readonly class TicketStatusTransitionSubscriber implements EventSubscriberInterf
         if (! $ticketStatus) {
             $exceptionData = new TicketStatusNotFoundException(
                 Response::HTTP_INTERNAL_SERVER_ERROR,
-                "TicketStatusNotFound",
-                "Ticket status not found. Can not make transition",
+                message: "Ticket status not found. Can not make transition",
             );
 
             throw new ApiException($exceptionData);
