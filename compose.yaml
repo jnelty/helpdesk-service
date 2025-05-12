@@ -26,8 +26,6 @@ services:
     container_name: helpdesk-redis
     volumes:
       - redis_data:/data
-    ports:
-      - 6380:6379
     command: ["redis-server", "--appendonly", "yes"]
     networks:
       - nginx-phpnetwork
@@ -37,6 +35,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: php84-fpm-service
+    ports:
+      - "32770:5432"
     depends_on:
       - postgres-service
       - redis
