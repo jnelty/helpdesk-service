@@ -41,7 +41,7 @@ services:
       - postgres-service
       - redis
     volumes:
-      - .:/var/www/project
+      - php_service_data:/var/www/project
     networks:
       - nginx-phpnetwork
 
@@ -52,7 +52,7 @@ services:
     ports:
       - "8888:80"
     volumes:
-      - .:/var/www/project
+      - php_service_data:/var/www/project
       - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - php84-service
@@ -65,6 +65,7 @@ volumes:
 ###> doctrine/doctrine-bundle ###
   database_data:
   redis_data:
+  php_service_data:
 ###< doctrine/doctrine-bundle ###
 networks:
   nginx-phpnetwork:
