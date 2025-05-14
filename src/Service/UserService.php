@@ -22,14 +22,15 @@ class UserService
     {
         $user = new User();
 
+        $user->setEmail($createUserDTO->email);
+        $user->setFirstName($createUserDTO->firstName);
+        $user->setLastName($createUserDTO->lastName);
+
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
             $createUserDTO->password
         );
         $user->setPassword($hashedPassword);
-        $user->setEmail($createUserDTO->email);
-        $user->setFirstName($createUserDTO->firstName);
-        $user->setLastName($createUserDTO->lastName);
 
         $entityManager->persist($user);
         $entityManager->flush();

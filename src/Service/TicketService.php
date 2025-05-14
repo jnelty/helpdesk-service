@@ -96,12 +96,15 @@ class TicketService
     }
 
 
-    public function fetchById(int $ticketId): array
+    public function fetchById(
+        int $ticketId,
+        array $serializerContext
+    ): array
     {
         $cacheKey = 'tickets_'.$ticketId;
 
         $ticketData = $this->cache
-            ->get($cacheKey, function (ItemInterface $item) use ($ticketId): array|null {
+            ->get($cacheKey, function (ItemInterface $item) use ($ticketId, $serializerContext): array|null {
                 $item->tag(['tickets']);
                 $item->expiresAfter(3600);
 
@@ -109,10 +112,7 @@ class TicketService
 
                 $ticketData = $this->serializer->normalize(
                     data: $ticket,
-                    context: [
-                        '_format' => 'json',
-                        'groups' => ['store-view', 'tag-view']
-                    ]
+                    context: $serializerContext
                 );
 
                 return $ticketData;
@@ -125,33 +125,31 @@ class TicketService
         return $ticketData;
     }
 
-    public function fetchAll(array $query): array
+    public function fetchAll(
+        array $query,
+        array $serializerContext
+    ): array
     {
-        extract($query);
-
         $cacheKey = 'tickets_' . md5(json_encode($query));
         $ticketsData = $this->cache
-            ->get($cacheKey, function (ItemInterface $item) use ($status, $tags, $page, $limit): array|null {
+            ->get($cacheKey, function (ItemInterface $item) use ($query, $serializerContext): array|null {
                 $item->tag(['tickets']);
                 $item->expiresAfter(3600);
 
                 $tickets = $this->entityManager->getRepository(Ticket::class)->findByParams(
                     params: [
-                        'status' => $status,
-                        'tags' => $tags,
+                        'status' => $query['status'],
+                        'tags' => $query['tags'],
                     ],
                     pageOptions: [
-                        'page' => $page,
-                        'limit' => $limit
+                        'page' => $query['page'],
+                        'limit' => $query['limit']
                     ]
                 );
 
                 $ticketsData = $this->serializer->normalize(
                     data: $tickets,
-                    context: [
-                        '_format' => 'json',
-                        'groups' => ['index-view', 'tag-view']
-                    ]
+                    context: $serializerContext
                 );
 
                 return $ticketsData;

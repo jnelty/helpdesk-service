@@ -38,14 +38,12 @@ class TicketMessage
     {
         $this->created_at = new \DateTimeImmutable();
     }
-
-    #[Groups(["message-view"])]
+    #[Groups(["public-view"])]
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    #[Groups(["message-view"])]
+    #[Groups(["public-view"])]
     public function getContent(): ?string
     {
         return $this->content;
@@ -57,8 +55,7 @@ class TicketMessage
 
         return $this;
     }
-
-    #[Groups(["message-view"])]
+    #[Groups(["public-view"])]
     public function getType(): ?string
     {
         return $this->type?->getName();
@@ -70,8 +67,7 @@ class TicketMessage
 
         return $this;
     }
-
-    #[Groups(["message-view"])]
+    #[Groups(["public-view"])]
     public function getAuthor(): string
     {
         return $this->user->getFirstName();
@@ -100,8 +96,7 @@ class TicketMessage
 
         return $this;
     }
-
-    #[Groups(["message-view"])]
+    #[Groups(["public-view"])]
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->created_at;

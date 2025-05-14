@@ -56,13 +56,13 @@ class Ticket
         $this->ticketMessages = new ArrayCollection();
     }
 
-    #[Groups(["store-view", "index-view"])]
+    #[Groups(["public-view"])]
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    #[Groups(["store-view", "index-view"])]
+    #[Groups(["public-view"])]
     public function getTitle(): ?string
     {
         return $this->title;
@@ -75,7 +75,7 @@ class Ticket
         return $this;
     }
 
-    #[Groups(["store-view"])]
+    #[Groups(["public-view"])]
     public function getDescription(): ?string
     {
         return $this->description;
@@ -88,7 +88,7 @@ class Ticket
         return $this;
     }
 
-    #[Groups(["store-view", "index-view"])]
+    #[Groups(["public-view"])]
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -101,7 +101,7 @@ class Ticket
         return $this;
     }
 
-    #[Groups(["store-view", "index-view"])]
+    #[Groups(["public-view"])]
     public function getStatus(): string|null
     {
         return $this->status?->getName();
@@ -136,7 +136,7 @@ class Ticket
         $this->tags[] = $tag;
     }
 
-    #[Groups(["store-view", "index-view"])]
+    #[Groups(["public-view"])]
     public function getTags(): array
     {
         return $this->tags->toArray();
@@ -157,10 +157,16 @@ class Ticket
         $this->currentPlace = $currentPlace;
     }
 
+    #[Groups(["ticket-messages-view"])]
+    public function getMessages(): array
+    {
+        return $this->ticketMessages->toArray();
+    }
+
     /**
      * @return Collection<int, TicketMessage>
      */
-    public function getTicketMessages(): Collection
+    public function getTicketMessagesCollection(): Collection
     {
         return $this->ticketMessages;
     }

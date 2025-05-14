@@ -6,6 +6,7 @@ use App\Repository\TicketMessageTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TicketMessageTypeRepository::class)]
 #[ORM\Table(name: 'ticket_message_types')]
@@ -35,6 +36,7 @@ class TicketMessageType
         return $this->id;
     }
 
+    #[Groups(["public-view"])]
     public function getName(): ?string
     {
         return $this->name;

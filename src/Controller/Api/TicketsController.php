@@ -33,10 +33,8 @@ final class TicketsController extends AbstractController
     {
     }
 
-
-
     #[Route('/api/tickets', name: 'storeTickets', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the storing ticket.', statusCode: 423)]
+    #[IsGranted('ROLE_ADMIN', message: 'Can not store ticket without admin privileges', statusCode: 423)]
     public function store(
         #[ValueResolver('dto')] CreateTicketDTO $createTicketDTO
     ): JsonResponse
@@ -49,7 +47,7 @@ final class TicketsController extends AbstractController
             data: $ticket,
             context: [
                 '_format' => 'json',
-                'groups' => ['index-view', 'tag-view']
+                'groups' => ['public-view']
             ]
         );
 
@@ -78,13 +76,16 @@ final class TicketsController extends AbstractController
         )] int $limit = 20
     ): JsonResponse
     {
-
+        $serializerContext = [
+            '_format' => 'json',
+            'groups' => ['public-view']
+        ];
         $ticketsData = $this->ticketService->fetchAll([
             'status' => $status,
             'tags' => $tags,
             'page' => $page,
             'limit' => $limit
-        ]);
+        ], $serializerContext);
 
         return new JsonResponse([
             'items' => $ticketsData,
@@ -100,7 +101,11 @@ final class TicketsController extends AbstractController
         int $id
     ): JsonResponse
     {
-        $ticketData = $this->ticketService->fetchById($id);
+        $serializerContext = [
+            '_format' => 'json',
+            'groups' => ['public-view', 'ticket-messages-view'],
+        ];
+        $ticketData = $this->ticketService->fetchById($id, $serializerContext);
 
         return new JsonResponse($ticketData, Response::HTTP_OK);
     }
@@ -124,17 +129,13 @@ final class TicketsController extends AbstractController
             data: $ticketMessage,
             context: [
                 '_format' => 'json',
-                'groups' => ['message-view']
+                'groups' => ['public-view']
             ]
         );
 
         return new JsonResponse($messageData);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
     #[Route('/api/tickets/{id}/transition', name: 'transitStatusTicket', methods: ['POST'])]
     public function transit(
         #[ValueResolver('dto')] TransitionDTO $transitionDTO,
@@ -142,31 +143,25 @@ final class TicketsController extends AbstractController
         Ticket $ticket
     ): JsonResponse
     {
-        $status = $ticket->getStatusEntity();
-        $ticket->setCurrentPlace($status->getName());
+        $status = $ticket->getStatus();
+        $ticket->setCurrentPlace($status);
 
         if ($this->workflow->can($ticket, $transitionDTO->transition)) {
             $this->workflow->apply($ticket, $transitionDTO->transition);
 
-            return new JsonResponse(
-                [
-                    'id' => $ticket->getId(),
-                    'oldStatus' => $status->getName(),
-                    'newStatus' => $ticket->getStatus()
-                ],
-                Response::HTTP_OK
-            );
+            return new JsonResponse([
+                'id' => $ticket->getId(),
+                'oldStatus' => $status,
+                'newStatus' => $ticket->getStatus()
+            ], Response::HTTP_OK);
         } else {
-            return new JsonResponse(
-                [
-                    'item' => [
-                        'id' => $ticket->getId(),
-                        'status' => $ticket->getStatus(),
-                    ],
-                    'message' => 'Forbidden transition to specified state'
+            return new JsonResponse([
+                'item' => [
+                    'id' => $ticket->getId(),
+                    'status' => $ticket->getStatus(),
                 ],
-                Response::HTTP_BAD_REQUEST
-            );
+                'message' => 'Forbidden transition to specified state'
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 }

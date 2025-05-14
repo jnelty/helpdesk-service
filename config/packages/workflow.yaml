@@ -17,7 +17,7 @@ framework:
                 - new
             transitions:
                 to_open:
-                    from: new
+                    from: [new, closed]
                     to: open
                 to_resolved:
                     from: open

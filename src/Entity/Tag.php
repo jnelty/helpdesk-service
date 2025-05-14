@@ -32,13 +32,13 @@ class Tag
         $this->tickets = new ArrayCollection();
     }
 
-    #[Groups(["tag-view"])]
+    #[Groups(["public-view"])]
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    #[Groups(["tag-view"])]
+    #[Groups(["public-view"])]
     public function getName(): ?string
     {
         return $this->name;
